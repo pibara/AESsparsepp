@@ -34,8 +34,15 @@ namespace aessparse {
   struct aes_sparse_file;
   //movable pimpl wrapper.
   struct aes_sparse_file: public abstract_aes_sparse_file {
+        //creation function is frind so it can invoke constructor.
         friend aes_sparse_file create_aes_sparse_file(abstract_sparse_file const &, CryptoPP::SecByteBlock);
+        //Move constuctor, needed by creator function invocation.
         aes_sparse_file(aes_sparse_file&& other);
+        aes_sparse_file& operator=(aes_sparse_file&& other);
+        //No coppy allowed
+        aes_sparse_file(aes_sparse_file& other) = delete;
+        aes_sparse_file& operator=(aes_sparse_file& other) = delete;
+        //destructor will destroy 'owned' pImpl if needed.
         ~aes_sparse_file();
         ssize_t read(void *buf, size_t count, off_t offset);
         ssize_t write(const void *buf, size_t count, off_t offset);
